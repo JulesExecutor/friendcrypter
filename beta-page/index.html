@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FriendCrypter Beta - Shush!</title>
+    <title>FriendCrypter - Custom Message Encrypter</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -177,6 +177,7 @@
                 alert('Please enter a message to decrypt.');
                 return;
             }
+
             let output = '';
             for (let char of input) {
                 if (decryptMap[char]) {
