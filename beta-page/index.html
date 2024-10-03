@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FriendCrypter Beta - SHHHH 🤫</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            transition: background-color 0.3s ease;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: calc(100% - 22px);
+            height: 150px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        p {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+        .dark-mode {
+            background-color: #333;
+            color: #f0f0f0;
+        }
+        .dark-mode textarea {
+            background-color: #555;
+            color: #f0f0f0;
+            border: 1px solid #444;
+        }
+        .dark-mode button {
+            background-color: #444;
+        }
+        .dark-mode button:hover {
+            background-color: #222;
+        }
+        .dark-mode h1 {
+            color: #fff;
+        }
+        .dark-mode p {
+            color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>FriendCrypter</h1>
+        <textarea id="inputText" placeholder="Type your message here..."></textarea>
+        <button onclick="encryptMessage()">Encrypt</button>
+        <button onclick="decryptMessage()">Decrypt</button>
+        <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+        <p id="outputText"></p>
+    </div>
+    <script>
+        // Custom mapping for encryption with multiple options
+        const encryptMap = {
+            'a': ['@', '2', '!', 'a', '1'],
+            'b': ['!', '3', 'b', '7', '$'],
+            'c': ['#', '4', 'C', '6', '5'],
+            'd': ['$', '5', 'D', '8', '0'],
+            'e': ['%', '9', 'E', '6', '^'],
+            'f': ['^', 'F', '5', '4', '3'],
+            'g': ['&', 'G', '1', '2', '7'],
+            'h': ['*', 'H', '8', '9', '6'],
+            'i': ['(', 'I', '7', '0', '3'],
+            'j': [')', 'J', '4', '1', '2'],
+            'k': ['-', 'K', '5', '6', '8'],
+            'l': ['=', 'L', '9', '1', '7'],
+            'm': ['+', 'M', '0', '3', '2'],
+            'n': ['{', 'N', '4', '5', '6'],
+            'o': ['}', 'O', '8', '9', '0'],
+            'p': ['[', 'P', '3', '5', '1'],
+            'q': [']', 'Q', '6', '7', '2'],
+            'r': [';', 'R', '1', '9', '4'],
+            's': [':', 'S', '7', '8', '5'],
+            't': ['"', 'T', '2', '3', '4'],
+            'u': ["'", 'U', '0', '5', '1'],
+            'v': ['<', 'V', '3', '2', '1'],
+            'w': ['>', 'W', '1', '4', '0'],
+            'x': [':', 'X', '8', '5', '3'],
+            'y': [';', 'Y', '2', '4', '6'],
+            'z': ['"', 'Z', '5', '3', '1'],
+            '0': ['a', 'b', 'c', 'd', 'e'],
+            '1': ['f', 'g', 'h', 'i', 'j'],
+            '2': ['k', 'l', 'm', 'n', 'o'],
+            '3': ['p', 'q', 'r', 's', 't'],
+            '4': ['u', 'v', 'w', 'x', 'y'],
+            '5': ['z', '!', '@', '#', '$'],
+            '6': ['%', '^', '&', '*', '('],
+            '7': [')', '-', '=', '+', '{'],
+            '8': ['}', '[', ']', ';', ':'],
+            '9': ['"', "'", '<', '>', '?'],
+            ' ': ['|', '~', '`', ' ', ' ']
+        };
+
+        // Reverse mapping for decryption
+        const decryptMap = Object.fromEntries(
+            Object.entries(encryptMap).flatMap(([key, values]) =>
+                values.map(value => [value, key])
+            )
+        );
+
+        function customCipher(input, map) {
+            let output = '';
+            for (let char of input) {
+                if (map[char]) {
+                    const options = map[char];
+                    output += options[Math.floor(Math.random() * options.length)]; // Randomly select one option
+                } else {
+                    output += char; // Default to original char if not found in map
+                }
+            }
+            return output;
+        }
+
+        function encryptMessage() {
+            const input = document.getElementById('inputText').value.toLowerCase();
+            if (!input) {
+                alert('Please enter a message to encrypt.');
+                return;
+            }
+            const encryptedText = customCipher(input, encryptMap);
+            document.getElementById('outputText').textContent = "Output: " + encryptedText;
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(encryptedText).then(() => {
+                alert('Encrypted message copied! Paste in Roblox NOW!');
+            }).catch((err) => {
+                alert('Failed to copy text: ' + err);
+            });
+        }
+
+        function decryptMessage() {
+            const input = document.getElementById('inputText').value;
+            if (!input) {
+                alert('Please enter a message to decrypt.');
+                return;
+            }
+            const decryptedText = customCipher(input, decryptMap);
+            document.getElementById('outputText').textContent = "Output: " + decryptedText;
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            document.querySelector('.container').classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>
