@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FriendCrypter</title>
+    <title>FriendCrypter - Custom Message Encrypter</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -100,10 +100,17 @@
             'k': '>', 'l': '<', 'm': '^^', 'n': '}', 'o': '0',
             'p': '7', 'q': '?', 'r': '2', 's': '$', 't': '7',
             'u': 'v', 'v': 'u', 'w': 'm', 'x': '!', 'y': '5',
-            'z': '2', ' ': '|' // Adding space mapping
+            'z': '2', ' ': '|'
         };
 
-        const decryptMap = Object.fromEntries(Object.entries(encryptMap).map(([key, value]) => [value, key]));
+        const decryptMap = {
+            '@': 'a', '8': 'b', '(': 'c', '}': 'd', '3': 'e',
+            '#': 'f', '9': 'g', '!': 'h', '1': 'i', ';': 'j',
+            '>': 'k', '<': 'l', '^^': 'm', '}': 'n', '0': 'o',
+            '7': 'p', '?': 'q', '2': 'r', '$': 's', '7': 't',
+            'v': 'u', 'u': 'v', 'm': 'w', '!': 'x', '5': 'y',
+            '2': 'z', '|': ' '
+        };
 
         function customCipher(input, map) {
             let output = '';
