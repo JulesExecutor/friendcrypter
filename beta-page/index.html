@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FriendCrypter - Custom Message Encrypter</title>
+    <title>FriendCrypter - BETA</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,11 +12,11 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #333; /* Dark mode background */
+            background-color: #333;
             transition: background-color 0.3s ease;
         }
         .container {
-            background-color: #444; /* Dark mode container */
+            background-color: #444;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
             padding: 20px;
@@ -39,7 +39,7 @@
             border: 1px solid #555;
             border-radius: 4px;
             font-size: 16px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             box-sizing: border-box;
             background-color: #555;
             color: #f0f0f0;
@@ -80,7 +80,7 @@
             padding-top: 60px;
         }
         .modal-content {
-            background-color: #444; /* Dark mode modal */
+            background-color: #444;
             color: #f0f0f0;
             margin: 5% auto;
             padding: 20px;
@@ -97,9 +97,12 @@
         }
         .close:hover,
         .close:focus {
-            color: #fff; /* Dark mode hover color */
+            color: #fff;
             text-decoration: none;
             cursor: pointer;
+        }
+        .experimental-toggle {
+            margin: 10px 0;
         }
     </style>
 </head>
@@ -107,9 +110,10 @@
     <div class="container">
         <h1>FriendCrypter</h1>
         <textarea id="inputText" placeholder="Type your message here..."></textarea>
+        <input type="password" id="password" placeholder="Enter password" style="margin-bottom: 10px; display: none;">
         <button onclick="encryptMessage()">Encrypt</button>
         <button onclick="decryptMessage()">Decrypt</button>
-        <button onclick="toggleSettingsModal()">Settings</button>
+        <button onclick="toggleExperimentalFeatures()">Experimental Features</button>
         
         <p id="outputText"></p>
     </div>
@@ -126,6 +130,9 @@
             </label><br>
             <label>
                 <input type="checkbox" id="darkModeSetting" onclick="toggleDarkModeSetting()" checked> Dark Mode
+            </label><br>
+            <label class="experimental-toggle">
+                <input type="checkbox" id="enablePassword" onclick="togglePasswordInput()"> Enable Password Encryption
             </label>
         </div>
     </div>
@@ -156,20 +163,30 @@
 
         function encryptMessage() {
             const input = document.getElementById('inputText').value.toLowerCase();
+            const passwordEnabled = document.getElementById('enablePassword').checked;
+            const password = document.getElementById('password').value;
+
             if (!input) {
                 alert('Please enter a message to encrypt.');
                 return;
             }
-            const encryptedText = customCipher(input, encryptMap);
-            let output = encryptedText;
 
-            if (document.getElementById('discordMode').checked) {
-                output = '```\n' + encryptedText + '\n```';
+            let finalOutput = customCipher(input, encryptMap);
+            if (passwordEnabled) {
+                if (!password) {
+                    alert('Please enter a password.');
+                    return;
+                }
+                finalOutput = `${password}:${finalOutput}`;
             }
 
-            document.getElementById('outputText').textContent = "Output: " + output;
+            if (document.getElementById('discordMode').checked) {
+                finalOutput = '```\n' + finalOutput + '\n```';
+            }
 
-            const copyText = document.getElementById('discordMode').checked ? output : encryptedText;
+            document.getElementById('outputText').textContent = "Output: " + finalOutput;
+
+            const copyText = document.getElementById('discordMode').checked ? finalOutput : finalOutput;
             if (document.getElementById('autoCopy').checked) {
                 navigator.clipboard.writeText(copyText).then(() => {
                     alert('Encrypted message copied! Paste in Roblox NOW!');
@@ -181,16 +198,27 @@
 
         function decryptMessage() {
             const input = document.getElementById('inputText').value;
+            const passwordEnabled = document.getElementById('enablePassword').checked;
+            const password = document.getElementById('password').value;
+
             if (!input) {
                 alert('Please enter a message to decrypt.');
                 return;
             }
 
-            let output = '';
-            for (let char of input) {
-                output += decryptMap[char] || char;
+            let [inputPassword, encryptedText] = input.split(':');
+            if (passwordEnabled && inputPassword !== password) {
+                alert('Incorrect password.');
+                return;
             }
+
+            let output = customCipher(encryptedText || input, decryptMap);
             document.getElementById('outputText').textContent = "Output: " + output;
+        }
+
+        function togglePasswordInput() {
+            const passwordInput = document.getElementById('password');
+            passwordInput.style.display = document.getElementById('enablePassword').checked ? 'block' : 'none';
         }
 
         function toggleDarkMode() {
@@ -211,7 +239,7 @@
             }
         }
 
-        function toggleSettingsModal() {
+        function toggleExperimentalFeatures() {
             const modal = document.getElementById("settingsModal");
             modal.style.display = modal.style.display === "block" ? "none" : "block";
         }
