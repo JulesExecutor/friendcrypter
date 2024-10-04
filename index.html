@@ -26,7 +26,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
         h1 {
             color: #f0f0f0;
@@ -186,7 +185,7 @@
 
             document.getElementById('outputText').textContent = "Output: " + finalOutput;
 
-            const copyText = document.getElementById('discordMode').checked ? finalOutput : finalOutput;
+            const copyText = finalOutput; // No need to alter copyText based on discord mode
             if (document.getElementById('autoCopy').checked) {
                 navigator.clipboard.writeText(copyText).then(() => {
                     alert('Encrypted message copied! Paste in Roblox NOW!');
@@ -206,17 +205,27 @@
                 return;
             }
 
-            let [encryptedPassword, encryptedText] = input.split(':');
             if (passwordEnabled) {
+                if (!input.includes(':')) {
+                    alert('This message is password-protected. Please enable password encryption to decrypt it.');
+                    return;
+                }
+                let [encryptedPassword, encryptedText] = input.split(':');
                 const decryptedPassword = customCipher(encryptedPassword, decryptMap);
                 if (decryptedPassword !== password) {
                     alert('Incorrect password.');
                     return;
                 }
-                encryptedText = encryptedText || input;
+                input = encryptedText; // Use the encrypted text for decryption
+            } else {
+                // If the password feature is disabled, we shouldn't even attempt to decrypt if there is a password in the input
+                if (input.includes(':')) {
+                    alert('This message is password-protected. Please enable password encryption to decrypt it.');
+                    return;
+                }
             }
 
-            let output = customCipher(encryptedText || input, decryptMap);
+            let output = customCipher(input, decryptMap);
             document.getElementById('outputText').textContent = "Output: " + output;
         }
 
@@ -250,7 +259,7 @@
 
         function toggleSettingsModal() {
             const modal = document.getElementById("settingsModal");
-            modal.style.display = modal.style.display === "block" ? "none" : "block";
+            modal.style.display = "none";
         }
 
         window.onclick = function(event) {
