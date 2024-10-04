@@ -171,7 +171,8 @@
                     alert('Please enter a password.');
                     return;
                 }
-                finalOutput = customCipher(password, encryptMap) + ':' + finalOutput; // Encrypt password
+                const encryptedPassword = customCipher(password, encryptMap);
+                finalOutput = encryptedPassword + ':' + finalOutput; // Encrypt password
             }
 
             if (document.getElementById('discordMode').checked) {
@@ -201,7 +202,6 @@
             }
 
             if (passwordEnabled) {
-                // Check if the input contains a password section
                 if (!input.includes(':')) {
                     alert('This message is password-protected. Please enable password encryption to decrypt it.');
                     return;
@@ -214,13 +214,13 @@
                 }
                 input = encryptedText; // Use the encrypted text for decryption
             } else {
-                // If the password feature is disabled, check if input has a password section
                 if (input.includes(':')) {
                     alert('This message is password-protected. Please enable password encryption to decrypt it.');
                     return;
                 }
             }
 
+            // Decrypt the remaining text
             let output = customCipher(input, decryptMap);
             document.getElementById('outputText').textContent = "Output: " + output;
         }
