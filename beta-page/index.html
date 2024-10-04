@@ -244,6 +244,11 @@
             modal.style.display = modal.style.display === "block" ? "none" : "block";
         }
 
+        function toggleSettingsModal() {
+            const modal = document.getElementById("settingsModal");
+            modal.style.display = modal.style.display === "block" ? "none" : "block";
+        }
+
         window.onclick = function(event) {
             const modal = document.getElementById("settingsModal");
             if (event.target === modal) {
