@@ -201,6 +201,7 @@
             }
 
             if (passwordEnabled) {
+                // Check if the input contains a password section
                 if (!input.includes(':')) {
                     alert('This message is password-protected. Please enable password encryption to decrypt it.');
                     return;
@@ -213,7 +214,7 @@
                 }
                 input = encryptedText; // Use the encrypted text for decryption
             } else {
-                // If the password feature is disabled, we shouldn't even attempt to decrypt if there is a password in the input
+                // If the password feature is disabled, check if input has a password section
                 if (input.includes(':')) {
                     alert('This message is password-protected. Please enable password encryption to decrypt it.');
                     return;
