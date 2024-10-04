@@ -107,6 +107,10 @@
             border-radius: 8px;
             text-align: left;
         }
+        .dark-mode .modal-content {
+            background-color: #444;
+            color: #f0f0f0;
+        }
         .close {
             color: #aaa;
             float: right;
@@ -128,7 +132,7 @@
         <button onclick="encryptMessage()">Encrypt</button>
         <button onclick="decryptMessage()">Decrypt</button>
         <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
-        <button onclick="toggleSettingsModal()">Toggle Experimental Settings</button>
+        <button onclick="toggleSettingsModal()">Settings</button>
         
         <p id="outputText"></p>
     </div>
@@ -142,6 +146,9 @@
             </label><br>
             <label>
                 <input type="checkbox" id="discordMode"> Discord Mode
+            </label><br>
+            <label>
+                <input type="checkbox" id="darkModeSetting" onclick="toggleDarkModeSetting()"> Dark Mode
             </label>
         </div>
     </div>
@@ -212,6 +219,19 @@
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             document.querySelector('.container').classList.toggle('dark-mode');
+            const modalContent = document.querySelector('.modal-content');
+            if (modalContent) {
+                modalContent.classList.toggle('dark-mode');
+            }
+        }
+
+        function toggleDarkModeSetting() {
+            const darkModeSetting = document.getElementById('darkModeSetting');
+            if (darkModeSetting.checked) {
+                toggleDarkMode();
+            } else {
+                toggleDarkMode();
+            }
         }
 
         function toggleSettingsModal() {
