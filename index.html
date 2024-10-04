@@ -12,11 +12,11 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #333;
+            background-color: #333; /* Dark mode background */
             transition: background-color 0.3s ease;
         }
         .container {
-            background-color: #444;
+            background-color: #444; /* Dark mode container */
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
             padding: 20px;
@@ -26,6 +26,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         h1 {
             color: #f0f0f0;
@@ -38,7 +39,7 @@
             border: 1px solid #555;
             border-radius: 4px;
             font-size: 16px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             box-sizing: border-box;
             background-color: #555;
             color: #f0f0f0;
@@ -61,6 +62,11 @@
             font-size: 18px;
             color: #f0f0f0;
         }
+        .settings {
+            margin-top: 20px;
+            text-align: left;
+            width: 100%;
+        }
         .modal {
             display: none;
             position: fixed;
@@ -74,7 +80,7 @@
             padding-top: 60px;
         }
         .modal-content {
-            background-color: #444;
+            background-color: #444; /* Dark mode modal */
             color: #f0f0f0;
             margin: 5% auto;
             padding: 20px;
@@ -91,12 +97,9 @@
         }
         .close:hover,
         .close:focus {
-            color: #fff;
+            color: #fff; /* Dark mode hover color */
             text-decoration: none;
             cursor: pointer;
-        }
-        .experimental-toggle {
-            margin: 10px 0;
         }
     </style>
 </head>
@@ -104,10 +107,9 @@
     <div class="container">
         <h1>FriendCrypter</h1>
         <textarea id="inputText" placeholder="Type your message here..."></textarea>
-        <input type="password" id="password" placeholder="Enter password" style="margin-bottom: 10px; display: none;">
         <button onclick="encryptMessage()">Encrypt</button>
         <button onclick="decryptMessage()">Decrypt</button>
-        <button onclick="toggleExperimentalFeatures()">Settings</button>
+        <button onclick="toggleSettingsModal()">Settings</button>
         
         <p id="outputText"></p>
     </div>
@@ -124,9 +126,6 @@
             </label><br>
             <label>
                 <input type="checkbox" id="darkModeSetting" onclick="toggleDarkModeSetting()" checked> Dark Mode
-            </label><br>
-            <label class="experimental-toggle">
-                <input type="checkbox" id="enablePassword" onclick="togglePasswordInput()"> Enable Password Encryption
             </label>
         </div>
     </div>
@@ -157,32 +156,22 @@
 
         function encryptMessage() {
             const input = document.getElementById('inputText').value.toLowerCase();
-            const passwordEnabled = document.getElementById('enablePassword').checked;
-            const password = document.getElementById('password').value;
-
             if (!input) {
                 alert('Please enter a message to encrypt.');
                 return;
             }
-
-            let finalOutput = customCipher(input, encryptMap);
-            if (passwordEnabled) {
-                if (!password) {
-                    alert('Please enter a password.');
-                    return;
-                }
-                const encryptedPassword = customCipher(password, encryptMap);
-                finalOutput = encryptedPassword + ':' + finalOutput; // Encrypt password
-            }
+            const encryptedText = customCipher(input, encryptMap);
+            let output = encryptedText;
 
             if (document.getElementById('discordMode').checked) {
-                finalOutput = '```\n' + finalOutput + '\n```';
+                output = '```\n' + encryptedText + '\n```';
             }
 
-            document.getElementById('outputText').textContent = "Output: " + finalOutput;
+            document.getElementById('outputText').textContent = "Output: " + output;
 
+            const copyText = document.getElementById('discordMode').checked ? output : encryptedText;
             if (document.getElementById('autoCopy').checked) {
-                navigator.clipboard.writeText(finalOutput).then(() => {
+                navigator.clipboard.writeText(copyText).then(() => {
                     alert('Encrypted message copied! Paste in Roblox NOW!');
                 }).catch((err) => {
                     alert('Failed to copy text: ' + err);
@@ -192,41 +181,16 @@
 
         function decryptMessage() {
             const input = document.getElementById('inputText').value;
-            const passwordEnabled = document.getElementById('enablePassword').checked;
-            const password = document.getElementById('password').value;
-
             if (!input) {
                 alert('Please enter a message to decrypt.');
                 return;
             }
 
-            if (passwordEnabled) {
-                if (!input.includes(':')) {
-                    alert('This message is password-protected. Please enable password encryption to decrypt it.');
-                    return;
-                }
-                let [encryptedPassword, encryptedText] = input.split(':');
-                const decryptedPassword = customCipher(encryptedPassword, decryptMap);
-                if (decryptedPassword !== password) {
-                    alert('Incorrect password.');
-                    return;
-                }
-                input = encryptedText; // Use the encrypted text for decryption
-            } else {
-                if (input.includes(':')) {
-                    alert('This message is password-protected. Please enable password encryption to decrypt it.');
-                    return;
-                }
+            let output = '';
+            for (let char of input) {
+                output += decryptMap[char] || char;
             }
-
-            // Decrypt the remaining text
-            const output = customCipher(input, decryptMap);
             document.getElementById('outputText').textContent = "Output: " + output;
-        }
-
-        function togglePasswordInput() {
-            const passwordInput = document.getElementById('password');
-            passwordInput.style.display = document.getElementById('enablePassword').checked ? 'block' : 'none';
         }
 
         function toggleDarkMode() {
@@ -247,19 +211,14 @@
             }
         }
 
-        function toggleExperimentalFeatures() {
+        function toggleSettingsModal() {
             const modal = document.getElementById("settingsModal");
             modal.style.display = modal.style.display === "block" ? "none" : "block";
         }
 
-        function toggleSettingsModal() {
-            const modal = document.getElementById("settingsModal");
-            modal.style.display = "none";
-        }
-
         window.onclick = function(event) {
             const modal = document.getElementById("settingsModal");
-            if (event.target == modal) {
+            if (event.target === modal) {
                 modal.style.display = "none";
             }
         }
