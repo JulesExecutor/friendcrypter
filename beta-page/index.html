@@ -177,7 +177,7 @@
                     alert('Please enter a password.');
                     return;
                 }
-                finalOutput = `${password}:${finalOutput}`;
+                finalOutput = customCipher(password, encryptMap) + ':' + finalOutput; // Encrypt password
             }
 
             if (document.getElementById('discordMode').checked) {
@@ -206,10 +206,14 @@
                 return;
             }
 
-            let [inputPassword, encryptedText] = input.split(':');
-            if (passwordEnabled && inputPassword !== password) {
-                alert('Incorrect password.');
-                return;
+            let [encryptedPassword, encryptedText] = input.split(':');
+            if (passwordEnabled) {
+                const decryptedPassword = customCipher(encryptedPassword, decryptMap);
+                if (decryptedPassword !== password) {
+                    alert('Incorrect password.');
+                    return;
+                }
+                encryptedText = encryptedText || input;
             }
 
             let output = customCipher(encryptedText || input, decryptMap);
@@ -251,7 +255,7 @@
 
         window.onclick = function(event) {
             const modal = document.getElementById("settingsModal");
-            if (event.target === modal) {
+            if (event.target == modal) {
                 modal.style.display = "none";
             }
         }
