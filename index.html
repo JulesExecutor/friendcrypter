@@ -181,9 +181,8 @@
 
             document.getElementById('outputText').textContent = "Output: " + finalOutput;
 
-            const copyText = finalOutput; // No need to alter copyText based on discord mode
             if (document.getElementById('autoCopy').checked) {
-                navigator.clipboard.writeText(copyText).then(() => {
+                navigator.clipboard.writeText(finalOutput).then(() => {
                     alert('Encrypted message copied! Paste in Roblox NOW!');
                 }).catch((err) => {
                     alert('Failed to copy text: ' + err);
@@ -221,7 +220,7 @@
             }
 
             // Decrypt the remaining text
-            let output = customCipher(input, decryptMap);
+            const output = customCipher(input, decryptMap);
             document.getElementById('outputText').textContent = "Output: " + output;
         }
 
@@ -258,12 +257,4 @@
             modal.style.display = "none";
         }
 
-        window.onclick = function(event) {
-            const modal = document.getElementById("settingsModal");
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
-</body>
-</html>
+        window.onclick
