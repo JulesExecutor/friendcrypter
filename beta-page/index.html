@@ -95,61 +95,25 @@
     <script>
         // Custom mapping for encryption using special characters only
         const encryptMap = {
-            'a': ['@', '#', '$', '%', '&'],
-            'b': ['!', '^', '*', '(', ')'],
-            'c': ['~', '?', '<', '>', ':'],
-            'd': [';', '\"', '\'', '[', ']'],
-            'e': ['{', '}', '|', '=', '+'],
-            'f': ['`', '¬', '°', '¬', 'º'],
-            'g': ['<', '>', '@', '#', '$'],
-            'h': ['^', '&', '*', '(', ')'],
-            'i': ['!', '£', '¤', '%', '¢'],
-            'j': ['§', '¶', '•', 'ª', 'º'],
-            'k': ['{', '}', '[', ']', '¬'],
-            'l': ['`', '¬', '°', '•', '§'],
-            'm': ['#', '@', '$', '&', '*'],
-            'n': ['!', '^', '>', '<', '?'],
-            'o': ['+', '=', '(', ')', '|'],
-            'p': ['*', '&', '@', '#', '%'],
-            'q': ['$', '#', '@', '!', '^'],
-            'r': ['%', '&', '*', '(', ')'],
-            's': ['@', '!', '#', '$', '%'],
-            't': ['^', '&', '*', '(', ')'],
-            'u': ['+', '=', '}', '{', '|'],
-            'v': ['&', '(', ')', '@', '$'],
-            'w': ['$', '%', '^', '&', '*'],
-            'x': ['!', '@', '#', '$', '%'],
-            'y': ['^', '&', '*', '(', ')'],
-            'z': ['+', '=', '{', '}', '|'],
-            '0': ['*', '!', '@', '#', '$'],
-            '1': ['%', '^', '&', '*', '('],
-            '2': [')', '-', '=', '+', '~'],
-            '3': [';', ':', '"', '\'', '<'],
-            '4': ['>', '?', '[', ']', '{'],
-            '5': ['}', '|', '`', '¬', '°'],
-            '6': ['~', '^', '&', '*', '@'],
-            '7': ['!', '£', '¤', '§', '•'],
-            '8': ['@', '#', '$', '%', '^'],
-            '9': ['&', '*', '(', ')', '_'],
-            ' ': [' ', ' ', ' ', ' ', ' ']
+            'a': '@', 'b': '!', 'c': '#', 'd': '$', 'e': '%',
+            'f': '^', 'g': '&', 'h': '*', 'i': '(', 'j': ')',
+            'k': '-', 'l': '=', 'm': '+', 'n': '[', 'o': ']',
+            'p': '{', 'q': '}', 'r': '|', 's': ';', 't': ':',
+            'u': '"', 'v': '<', 'w': '>', 'x': '?', 'y': '~',
+            'z': '`', '0': '1', '1': '2', '2': '3', '3': '4',
+            '4': '5', '5': '6', '6': '7', '7': '8', '8': '9',
+            '9': '0', ' ': ' '
         };
 
         // Reverse mapping for decryption
         const decryptMap = Object.fromEntries(
-            Object.entries(encryptMap).flatMap(([key, values]) =>
-                values.map(value => [value, key])
-            )
+            Object.entries(encryptMap).map(([key, value]) => [value, key])
         );
 
         function customCipher(input, map) {
             let output = '';
             for (let char of input) {
-                if (map[char]) {
-                    const options = map[char];
-                    output += options[Math.floor(Math.random() * options.length)]; // Randomly select one option
-                } else {
-                    output += char; // Default to original char if not found in map
-                }
+                output += map[char] || char; // Use the mapped char or original char
             }
             return output;
         }
@@ -180,11 +144,7 @@
 
             let output = '';
             for (let char of input) {
-                if (decryptMap[char]) {
-                    output += decryptMap[char]; // Map back to the original letter
-                } else {
-                    output += char; // Default to original char if not found in map
-                }
+                output += decryptMap[char] || char; // Map back to the original letter or keep original
             }
             document.getElementById('outputText').textContent = "Output: " + output;
         }
