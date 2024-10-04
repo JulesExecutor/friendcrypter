@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FriendCrypter - BETA</title>
+    <title>FriendCrypter - Custom Message Encrypter</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -80,17 +80,14 @@
             padding-top: 60px;
         }
         .modal-content {
-            background-color: #fefefe;
+            background-color: #444; /* Dark mode modal */
+            color: #f0f0f0;
             margin: 5% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 300px;
             border-radius: 8px;
             text-align: left;
-        }
-        .dark-mode .modal-content {
-            background-color: #444;
-            color: #f0f0f0;
         }
         .close {
             color: #aaa;
@@ -100,7 +97,7 @@
         }
         .close:hover,
         .close:focus {
-            color: black;
+            color: #fff; /* Dark mode hover color */
             text-decoration: none;
             cursor: pointer;
         }
