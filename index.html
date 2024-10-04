@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚨 THIS IS IN BETA! FriendCrypter ! THIS IS IN BETA</title>
+    <title>FriendCrypter - Custom Message Encrypter</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -31,11 +31,6 @@
         h1 {
             color: #333;
             margin-bottom: 20px;
-            animation: titleAnimation 5s infinite; /* Add animation */
-        }
-        @keyframes titleAnimation {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
         }
         textarea {
             width: calc(100% - 22px);
@@ -90,7 +85,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>🚨 THIS IS IN BETA! FriendCrypter ! THIS IS IN BETA</h1>
+        <h1>FriendCrypter</h1>
         <textarea id="inputText" placeholder="Type your message here..."></textarea>
         <button onclick="encryptMessage()">Encrypt</button>
         <button onclick="decryptMessage()">Decrypt</button>
@@ -98,33 +93,27 @@
         <p id="outputText"></p>
     </div>
     <script>
-        // Custom mapping for encryption/decryption
+        // Custom mapping for encryption using special characters only
         const encryptMap = {
-            'a': '2', 'b': '!', 'c': '3', 'd': '#', 'e': '5',
-            'f': '7', 'g': '8', 'h': '9', 'i': '1', 'j': '0',
-            'k': '%', 'l': '^', 'm': '&', 'n': '*', 'o': '(',
-            'p': ')', 'q': '-', 'r': '=', 's': '+', 't': '[',
-            'u': ']', 'v': '{', 'w': '}', 'x': ':', 'y': ';',
-            'z': '"', '0': 'a', '1': 'b', '2': 'c', '3': 'd',
-            '4': 'e', '5': 'f', '6': 'g', '7': 'h', '8': 'i',
-            '9': 'j', ' ': '|'
+            'a': '@', 'b': '!', 'c': '#', 'd': '$', 'e': '%',
+            'f': '^', 'g': '&', 'h': '*', 'i': '(', 'j': ')',
+            'k': '-', 'l': '=', 'm': '+', 'n': '[', 'o': ']',
+            'p': '{', 'q': '}', 'r': '|', 's': ';', 't': ':',
+            'u': '"', 'v': '<', 'w': '>', 'x': '?', 'y': '~',
+            'z': '`', '0': '1', '1': '2', '2': '3', '3': '4',
+            '4': '5', '5': '6', '6': '7', '7': '8', '8': '9',
+            '9': '0', ' ': ' '
         };
 
-        const decryptMap = {
-            '2': 'a', '!': 'b', '3': 'c', '#': 'd', '5': 'e',
-            '7': 'f', '8': 'g', '9': 'h', '1': 'i', '0': 'j',
-            '%': 'k', '^': 'l', '&': 'm', '*': 'n', '(': 'o',
-            ')': 'p', '-': 'q', '=': 'r', '+': 's', '[': 't',
-            ']': 'u', '{': 'v', '}': 'w', ':': 'x', ';': 'y',
-            '"': 'z', 'a': '0', 'b': '1', 'c': '2', 'd': '3',
-            'e': '4', 'f': '5', 'g': '6', 'h': '7', 'i': '8',
-            'j': '9', '|': ' '
-        };
+        // Reverse mapping for decryption
+        const decryptMap = Object.fromEntries(
+            Object.entries(encryptMap).map(([key, value]) => [value, key])
+        );
 
         function customCipher(input, map) {
             let output = '';
             for (let char of input) {
-                output += map[char] || char; // Default to original char if not found in map
+                output += map[char] || char; // Use the mapped char or original char
             }
             return output;
         }
@@ -152,8 +141,12 @@
                 alert('Please enter a message to decrypt.');
                 return;
             }
-            const decryptedText = customCipher(input, decryptMap);
-            document.getElementById('outputText').textContent = "Output: " + decryptedText;
+
+            let output = '';
+            for (let char of input) {
+                output += decryptMap[char] || char; // Map back to the original letter or keep original
+            }
+            document.getElementById('outputText').textContent = "Output: " + output;
         }
 
         function toggleDarkMode() {
